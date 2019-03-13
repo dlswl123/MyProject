@@ -1,9 +1,10 @@
-package myproject1;
+package myproject;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Vector;
 
 public class ProjectDao {
 	
@@ -66,7 +67,7 @@ public class ProjectDao {
 		}
 	} // 입력한 자료 저장 insert
 	// TODO 저장된값 불러오기(조회)
-	public void search(LegerVo vo) {
+	public Vector<LegerVo> search(SearchDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -74,16 +75,33 @@ public class ProjectDao {
 			conn = getConnection();
 			String sql = "select *"
 					+ "	  from ledger"
-					+ "	  where" + " = (select ?"
-					+ "				 from ledger"
-					+ "				 where ? = ?";
+					+ "	  where " + dto.getSearchKey() + " = (select " + dto.getSearchKey() 
+					+ "				 					      from ledger"
+					+ "				    					  where "+ " = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, vo.getLedName());
+//			int searchMoney
+			pstmt.setString(1, dto.getSearchTxt()); // 셀렉트조회할 내용
+			rs = pstmt.executeQuery();
+			Vector<LegerVo> vec = new Vector<>();
+			while(rs.next()) {
+				int ledNo = rs.getInt("ledNo");
+				String ledName = rs.getString("ledName");
+				int ledMoney = rs.getInt("ledMoney");
+				String ledType = rs.getString("ledType");
+				String ledDay = rs.getString("ledDay");
+				String ledMemo = rs.getString("ledMemo");
+				
+				LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
+				vec.add(vo);
+			}
+			System.out.println(vec);
+			return vec;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			closeAll(conn, pstmt, rs);
 		}
+		return null;
 	}
 	// TODO 저장된값 불러오기(통계)
 	

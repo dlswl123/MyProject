@@ -1,4 +1,4 @@
-package myproject1;
+package myproject;
 
 public class LegerVo {
 	private int ledNo;

@@ -1,4 +1,4 @@
-package myproject1;
+package myproject;
 
 import javax.swing.JPanel;
 
