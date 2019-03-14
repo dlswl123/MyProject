@@ -49,7 +49,7 @@ public class ProjectDao {
 		PreparedStatement pstmt = null;
 		try {
 			conn = getConnection();
-			String sql = "insert into ledger" + 
+			String sql = "insert into ledger " + 
 					"	  values (?, ?, ?, ?, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, vo.getLedNo());
@@ -66,6 +66,7 @@ public class ProjectDao {
 			closeAll(conn, pstmt, null);
 		}
 	} // 입력한 자료 저장 insert
+	
 	// TODO 저장된값 불러오기(조회)
 	public Vector<LegerVo> search(SearchDto dto) {
 		Connection conn = null;
@@ -75,22 +76,24 @@ public class ProjectDao {
 		try {
 			conn = getConnection();
 			String key = dto.getSearchKey();
-//			System.out.println(key);
+			String array = dto.getSearchArray();
+			System.out.println("search dao : " + array);
 			String sql = "select *"
 					+ "	  from ledger"
-					+ "	  where " + key + " = ?";
-//					+ "	  where " + key + " = (select " + key
-//					+ "				   	       from ledger"
-//					+ "				 		   where " + key + "= ?";
+					+ "	  where " + key + " like ?"
+					+ "   order by " + array ;
+			
 			pstmt = conn.prepareStatement(sql);
 			if (key.equals("ledmoney")) {
 				int val = Integer.parseInt(dto.getSearchTxt());
 				pstmt.setInt(1, val);
 			} else if (key.equals("ledname")) {
-				String val = dto.getSearchTxt();
+				String val = dto.getSearchTxt() + "%";
 				pstmt.setString(1, val);
+				System.out.println(val);
 			} else if (key.equals("ledmemo")) {
 				String val = "%" + dto.getSearchTxt() + "%";
+				System.out.println(val);
 				pstmt.setString(1, val);
 			}
 			rs = pstmt.executeQuery();
@@ -118,10 +121,88 @@ public class ProjectDao {
 		return null;
 	}
 	
-	
+	public Vector<LegerVo> searchAll(SearchDto dto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			String array = dto.getSearchArray();
+//			System.out.println("projectdao, array : " + array);
+			String sql = "select * from ledger"
+					+ "   order by " + array ;
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+//			System.out.println(rs);
+			Vector<LegerVo> vec = new Vector<>();
+			
+			while(rs.next()) {
+				int ledNo = rs.getInt("ledNo");
+				String ledName = rs.getString("ledName");
+				int ledMoney = rs.getInt("ledMoney");
+				String ledType = rs.getString("ledType");
+				String ledDay = rs.getString("ledDay");
+				String ledMemo = rs.getString("ledMemo");
+				
+				LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
+				vec.add(vo);
+			}
+//			System.out.println("projectdao, vec : " + vec);
+			return vec;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, pstmt, rs);
+		}
+		return null;
+	}
 	
 	// TODO 저장된값 불러오기(통계)
 	
+	public Vector<LegerVo> statsPie(int code) {
+		code = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		if (code == 10) {
+			code = 10;
+		} else if(code == 20) {
+			code = 20;
+		}
+		try {
+			conn = getConnection();
+			String sql = "select ledname, sum(ledname)"
+					+ "	  from ledger"
+					+ "	  where ledno = ?"
+					+ "	  group by ledname"
+					+ "   order by ledname";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, code);
+			rs = pstmt.executeQuery();
+			Vector<LegerVo> vec = new Vector<>();
+			
+			while(rs.next()) {
+				int ledNo = rs.getInt("ledNo");
+				String ledName = rs.getString("ledName");
+				int ledMoney = rs.getInt("ledMoney");
+				String ledType = rs.getString("ledType");
+				String ledDay = rs.getString("ledDay");
+				String ledMemo = rs.getString("ledMemo");
+				
+				LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
+				vec.add(vo);
+				return vec;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, pstmt, null);
+		}
+		return null;
+	} // statsPie() 통계작성하기
 	
 	
 	

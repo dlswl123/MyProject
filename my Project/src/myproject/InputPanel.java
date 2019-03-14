@@ -4,15 +4,23 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 @SuppressWarnings("serial")
 class InputPanel extends JPanel implements ActionListener {
@@ -51,9 +59,32 @@ class InputPanel extends JPanel implements ActionListener {
 	JLabel lblMemo = new JLabel("메모");
 	JTextField txtMemo = new JTextField(20);
 	
+	Date now = new Date(System.currentTimeMillis());
+	SpinnerDateModel model = new SpinnerDateModel();
+	JSpinner spinDate = new JSpinner(model);
+	DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+	JSpinner.DateEditor editor = new JSpinner.DateEditor(spinDate, "yyyy.MM.dd");
+	String date = "";
 	
 	public InputPanel() {
-		setUI();		
+		JFormattedTextField ftxtf = editor.getTextField();
+		ftxtf.setEditable(false);
+		ftxtf.setHorizontalAlignment(JTextField.CENTER);
+		date = dateFormat.format((Date)model.getValue());
+		spinDate.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				Date value = (Date)model.getValue();
+				Date next = (Date)model.getNextValue();
+				if (value != null && next != null) {
+					date = dateFormat.format(value);
+					System.out.println(date);
+				}
+				
+			}
+		});
+		setUI();
 	}
 	  
 	private void setUI() {
@@ -94,6 +125,10 @@ class InputPanel extends JPanel implements ActionListener {
 		group.add(rdoCheckCard);
 		group.add(rdoCash);
 		group.add(rdoTrans);
+		rdoCreditCard.setOpaque(false);
+		rdoCash.setOpaque(false);
+		rdoCheckCard.setOpaque(false);
+		rdoTrans.setOpaque(false);
 		pnlRadio.add(rdoCreditCard);
 		pnlRadio.add(rdoCheckCard);
 		pnlRadio.add(rdoCash);
@@ -104,7 +139,8 @@ class InputPanel extends JPanel implements ActionListener {
 		JPanel pnlDay = new JPanel();
 		pnlDay.setOpaque(false);
 		pnlDay.add(lblDate);
-		pnlDay.add(txtDay);
+//		pnlDay.add(txtDay);
+		pnlDay.add(spinDate);
 		this.add(pnlDay);
 		
 		// 메모입력 부분
@@ -156,8 +192,8 @@ class InputPanel extends JPanel implements ActionListener {
 			ledType = rdoTrans.getText();
 		} // rdo버튼에 따라 입력받을 텍스트 설정
 		
-		String ledDay = txtDay.getText();
-		String ledMemo = txtMemo.getText();
+		String ledDay = date;
+		String ledMemo = txtDay.getText();
 		System.out.println("rdoCheckCard" + rdoCheckCard);
 		LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
 		System.out.println(vo.toString());

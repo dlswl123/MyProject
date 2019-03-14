@@ -3,6 +3,7 @@ package myproject;
 public class SearchDto {
 	private String searchKey;
 	private String searchTxt;
+	private String searchArray;
 
 	public SearchDto() {
 		super();
@@ -13,6 +14,22 @@ public class SearchDto {
 		super();
 		this.searchKey = searchKey;
 		this.searchTxt = searchTxt;
+	}
+
+	
+	public SearchDto(String searchKey, String searchTxt, String searchArray) {
+		super();
+		this.searchKey = searchKey;
+		this.searchTxt = searchTxt;
+		this.searchArray = searchArray;
+	}
+
+	public String getSearchArray() {
+		return searchArray;
+	}
+
+	public void setSearchArray(String searchArray) {
+		this.searchArray = searchArray;
 	}
 
 	public String getSearchKey() {
@@ -33,7 +50,7 @@ public class SearchDto {
 
 	@Override
 	public String toString() {
-		return "SearchDto [searchKey=" + searchKey + ", searchTxt=" + searchTxt + "]";
+		return "SearchDto [searchKey=" + searchKey + ", searchTxt=" + searchTxt + ", searchArray=" + searchArray + "]";
 	}
 	
 		
