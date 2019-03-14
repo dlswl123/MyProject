@@ -71,18 +71,32 @@ public class ProjectDao {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		
 		try {
 			conn = getConnection();
+			String key = dto.getSearchKey();
+//			System.out.println(key);
 			String sql = "select *"
 					+ "	  from ledger"
-					+ "	  where " + dto.getSearchKey() + " = (select " + dto.getSearchKey() 
-					+ "				 					      from ledger"
-					+ "				    					  where "+ " = ?";
+					+ "	  where " + key + " = ?";
+//					+ "	  where " + key + " = (select " + key
+//					+ "				   	       from ledger"
+//					+ "				 		   where " + key + "= ?";
 			pstmt = conn.prepareStatement(sql);
-//			int searchMoney
-			pstmt.setString(1, dto.getSearchTxt()); // 셀렉트조회할 내용
+			if (key.equals("ledmoney")) {
+				int val = Integer.parseInt(dto.getSearchTxt());
+				pstmt.setInt(1, val);
+			} else if (key.equals("ledname")) {
+				String val = dto.getSearchTxt();
+				pstmt.setString(1, val);
+			} else if (key.equals("ledmemo")) {
+				String val = "%" + dto.getSearchTxt() + "%";
+				pstmt.setString(1, val);
+			}
 			rs = pstmt.executeQuery();
+//			System.out.println(rs);
 			Vector<LegerVo> vec = new Vector<>();
+			
 			while(rs.next()) {
 				int ledNo = rs.getInt("ledNo");
 				String ledName = rs.getString("ledName");
@@ -103,6 +117,9 @@ public class ProjectDao {
 		}
 		return null;
 	}
+	
+	
+	
 	// TODO 저장된값 불러오기(통계)
 	
 	

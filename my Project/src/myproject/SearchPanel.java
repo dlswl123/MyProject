@@ -19,7 +19,7 @@ public class SearchPanel extends JPanel implements ActionListener {
 	
 //	JButton btnInsert = new JButton("입력");
 	JTextField txtSearch = new JTextField(15);
-	String[] searchList = {"금액", "카테고리"};
+	String[] searchList = {"금액", "카테고리", "메모"};
 	JComboBox<String> cmbSearch = new JComboBox<>(searchList);
 	JButton btnSearch = new JButton("조회");
 	JTextArea txaMessage = new JTextArea();
@@ -42,6 +42,7 @@ public class SearchPanel extends JPanel implements ActionListener {
 		pnlSearch.add(txtSearch);
 		pnlSearch.add(btnSearch);
 		pnlSearch.add(cmbArrayType);
+		cmbArrayType.addActionListener(this);
 		btnSearch.addActionListener(this);
 		pnlNorth.add(pnlSearch);
 		this.add(pnlNorth, BorderLayout.NORTH);
@@ -53,18 +54,23 @@ public class SearchPanel extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		String searchKey = null;
+		String searchArray = (String)cmbArrayType.getSelectedItem();
+		System.out.println(searchArray);
 		if (obj == btnSearch) {
 			String search = (String)cmbSearch.getSelectedItem();
 			System.out.println(search);
 			if (search.equals("금액")) {
-				searchKey = "ledMoney";
+				searchKey = "ledmoney";
+			} else if(search.equals("카테고리")) {
+				searchKey = "ledname";
+			} else if (search.equals("메모")) {
+				searchKey = "ledmemo";
 			}
 			
-			if(search.equals("카테고리")) {
-				searchKey = "ledname";
-			}
 			String searchTxt = txtSearch.getText();
 			Vector<LegerVo> vec = dao.search(new SearchDto(searchKey, searchTxt));
+			
+			txaMessage.setText("");
 			for (LegerVo vo : vec) {
 				int ledno = vo.getLedNo();
 				String ledname = vo.getLedName();
@@ -78,14 +84,20 @@ public class SearchPanel extends JPanel implements ActionListener {
 							   + ledmoney + "\t|"
 							   + ledtype  + "\t|"
 							   + ledday   + "\t|"
-							   + ledmemo  + "\t|";
+							   + ledmemo  + "\n";
 				txaMessage.append(message);
 			}
-			txaMessage.append("======검색완료======");
+			txaMessage.append("======검색완료====== \n");
+			
+			
 //		} else if (obj == btnInsert) {
 //			InputPanel pnl = new InputPanel();
+//		} else if (searchArray) {
+//			
+//		} else if () {
+//			
+//		}
 		}
-		
 	}
 	
 } // class
