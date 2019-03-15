@@ -29,7 +29,7 @@ public class SearchPanel extends JPanel implements ActionListener {
 	JComboBox<String> cmbArrayType = new JComboBox<>(strArray);
 //	JButton btnDelete = new JButton("삭제");
 	
-	LegerDao dao = LegerDao.getInstance();
+	ProjectDao dao = ProjectDao.getInstance();
 	SearchDto dto = new SearchDto();
 	
 	public SearchPanel() {
@@ -44,12 +44,13 @@ public class SearchPanel extends JPanel implements ActionListener {
 		JPanel pnlSearch = new JPanel();
 		pnlSearch.setOpaque(false);
 		pnlSearch.add(cmbSearch);
-		pnlSearch.add(cmbArrayType);
 		pnlSearch.add(txtSearch);
 		pnlSearch.add(btnSearch);
 		pnlSearch.add(btnSearchAll);
+		pnlSearch.add(cmbArrayType);
 		btnSearchAll.addActionListener(this);
 		btnSearch.addActionListener(this);
+//		cmbArrayType.addActionListener(this);
 		pnlNorth.add(pnlSearch);
 		this.add(pnlNorth, BorderLayout.NORTH);
 		
@@ -61,29 +62,12 @@ public class SearchPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
-		System.out.println(obj);
 		String searchKey = null;
 		String searchTxt = "";
-		String searchArray = null;
-		
-		String item = (String)cmbArrayType.getSelectedItem();
 		
 		if(!(txtSearch.getText().equals(""))) {
 			searchTxt = txtSearch.getText();
 		}
-		
-		SearchDto dto = new SearchDto();
-		if (item.equals("글자순")) {
-			searchArray = "ledname";
-		} else if (item.equals("금액순")) {
-			searchArray = "ledmoney";
-		} else if (item.equals("날짜순")) {
-			searchArray = "ledday";
-		} else if (item.equals("결제방법순")) {
-			searchArray = "ledtype";
-		}
-//		System.out.println(item);
-		dto.setSearchArray(searchArray);
 		
 		if (obj == btnSearch) {
 			String search = (String)cmbSearch.getSelectedItem();
@@ -94,21 +78,44 @@ public class SearchPanel extends JPanel implements ActionListener {
 				searchKey = "ledname";
 			} else if (search.equals("메모")) {
 				searchKey = "ledmemo";
-			} // 검색버튼 클릭시 검색부분만 선택
+			}
 			
-//			System.out.println("search : " + searchArray);
-			Vector<LegerVo> vec = dao.search(new SearchDto(searchKey, searchTxt, searchArray));
+			Vector<LegerVo> vec = dao.search(new SearchDto(searchKey, searchTxt));
 			printMessage(vec);
 			
-			//전체검색
 		} else if (obj == btnSearchAll) {
+			String searchArray = null;
+			String item = (String)cmbArrayType.getSelectedItem();
+//				System.out.println(item);
+			SearchDto dto = new SearchDto();
+			if (item.equals("글자순")) {
+				searchArray = "ledname";
+			} else if (item.equals("금액순")) {
+				searchArray = "ledmoney";
+			} else if (item.equals("날짜순")) {
+				searchArray = "ledday";
+			} else if (item.equals("결제방법순")) {
+				searchArray = "ledtype";
+			}
+			dto.setSearchArray(searchArray);
+			
 			Vector<LegerVo> vec = dao.searchAll(dto);
 			printMessage(vec);
-
-		} // 전체검색버튼 클릭시 내용전체 검색
-	} // actionPerformed() 
+			
+//		} else if (obj == cmbArrayType) {
+////			if () {
+////				
+////			}
+//			JComboBox<String> cmb = (JComboBox<String>)obj;
+//			int index = cmb.getSelectedIndex();
+//			String orderColName = strColumnNames[index];
+////			System.out.println(orderColName);
+//			
+//			Vector<LegerVo> vec = dao.searchAll(orderColName);
+//			printMessage(vec);
+		}
+	}
 	
-	// 메세지 출력부분
 	public void printMessage(Vector<LegerVo> vec) {
 		txaMessage.setText("");
 		for (LegerVo vo : vec) {
@@ -135,7 +142,8 @@ public class SearchPanel extends JPanel implements ActionListener {
 			txaMessage.append(message);
 		}
 		txaMessage.append("======검색완료====== \n");
-	} // printMessage()
-	
-
+	}
+	public void arrayType() {
+		
+	}
 } // class

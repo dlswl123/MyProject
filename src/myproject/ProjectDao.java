@@ -66,7 +66,6 @@ public class ProjectDao {
 			closeAll(conn, pstmt, null);
 		}
 	} // 입력한 자료 저장 insert
-	
 	// TODO 저장된값 불러오기(조회)
 	public Vector<LegerVo> search(SearchDto dto) {
 		Connection conn = null;
@@ -77,7 +76,7 @@ public class ProjectDao {
 			conn = getConnection();
 			String key = dto.getSearchKey();
 			String array = dto.getSearchArray();
-			System.out.println("search dao : " + array);
+			System.out.println(array);
 			String sql = "select *"
 					+ "	  from ledger"
 					+ "	  where " + key + " like ?"
@@ -121,6 +120,43 @@ public class ProjectDao {
 		return null;
 	}
 	
+//	public Vector<LegerVo> searchAll(String colName) {
+//		Connection conn = null;
+//		PreparedStatement pstmt = null;
+//		ResultSet rs = null;
+//		
+//		try {
+//			conn = getConnection();
+////			System.out.println("projectdao, array : " + array);
+//			String sql = "select * from ledger"
+//					+ "   order by " + colName ;
+//			System.out.println(sql);
+//			pstmt = conn.prepareStatement(sql);
+//			rs = pstmt.executeQuery();
+////			System.out.println(rs);
+//			Vector<LegerVo> vec = new Vector<>();
+//			
+//			while(rs.next()) {
+//				int ledNo = rs.getInt("ledNo");
+//				String ledName = rs.getString("ledName");
+//				int ledMoney = rs.getInt("ledMoney");
+//				String ledType = rs.getString("ledType");
+//				String ledDay = rs.getString("ledDay");
+//				String ledMemo = rs.getString("ledMemo");
+//				
+//				LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
+//				vec.add(vo);
+//			}
+////			System.out.println("projectdao, vec : " + vec);
+//			return vec;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			closeAll(conn, pstmt, rs);
+//		}
+//		return null;
+//	}
+//	
 	public Vector<LegerVo> searchAll(SearchDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -161,48 +197,6 @@ public class ProjectDao {
 	
 	// TODO 저장된값 불러오기(통계)
 	
-	public Vector<LegerVo> statsPie(int code) {
-		code = 0;
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		if (code == 10) {
-			code = 10;
-		} else if(code == 20) {
-			code = 20;
-		}
-		try {
-			conn = getConnection();
-			String sql = "select ledname, sum(ledname)"
-					+ "	  from ledger"
-					+ "	  where ledno = ?"
-					+ "	  group by ledname"
-					+ "   order by ledname";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, code);
-			rs = pstmt.executeQuery();
-			Vector<LegerVo> vec = new Vector<>();
-			
-			while(rs.next()) {
-				int ledNo = rs.getInt("ledNo");
-				String ledName = rs.getString("ledName");
-				int ledMoney = rs.getInt("ledMoney");
-				String ledType = rs.getString("ledType");
-				String ledDay = rs.getString("ledDay");
-				String ledMemo = rs.getString("ledMemo");
-				
-				LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
-				vec.add(vo);
-				return vec;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			closeAll(conn, pstmt, null);
-		}
-		return null;
-	} // statsPie() 통계작성하기
 	
 	
 	

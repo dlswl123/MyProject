@@ -23,7 +23,7 @@ public class ProjectMain extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("My Project");
 		setUI();
-		setSize(550, 500);
+		setSize(500, 500);
 		setVisible(true);
 		
 	} // ProjectMain()

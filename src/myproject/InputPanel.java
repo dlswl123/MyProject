@@ -28,7 +28,7 @@ class InputPanel extends JPanel implements ActionListener {
 	final int INCOME = 10;
 	final int EXPENSE = 20;
 	
-	LegerDao dao = LegerDao.getInstance();
+	ProjectDao dao = ProjectDao.getInstance();
 	
 	JTabbedPane tab = new JTabbedPane();
 	JPanel pnlInput = new JPanel();
@@ -71,8 +71,6 @@ class InputPanel extends JPanel implements ActionListener {
 		ftxtf.setEditable(false);
 		ftxtf.setHorizontalAlignment(JTextField.CENTER);
 		date = dateFormat.format((Date)model.getValue());
-		spinDate.setEditor(editor);
-
 		spinDate.addChangeListener(new ChangeListener() {
 			
 			@Override
@@ -196,8 +194,9 @@ class InputPanel extends JPanel implements ActionListener {
 		
 		String ledDay = date;
 		String ledMemo = txtDay.getText();
+		System.out.println("rdoCheckCard" + rdoCheckCard);
 		LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
-//		System.out.println(vo.toString());
+		System.out.println(vo.toString());
 		return vo;
 	} //  버튼 입력
 	

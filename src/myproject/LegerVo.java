@@ -21,12 +21,6 @@ public class LegerVo {
 		this.ledDay = ledDay;
 		this.ledMemo = ledMemo;
 	}
-	public LegerVo(String ledName, int ledMoney) {
-		this.ledName = ledName;
-		this.ledMoney = ledMoney;
-		
-	}
-
 	public int getLedNo() {
 		return ledNo;
 	}
