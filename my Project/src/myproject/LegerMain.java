@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import javafx.scene.image.Image;
+
 @SuppressWarnings("serial")
 public class LegerMain extends JFrame {
 	

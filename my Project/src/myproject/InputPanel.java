@@ -67,6 +67,7 @@ class InputPanel extends JPanel implements ActionListener {
 	String date = "";
 	
 	public InputPanel() {
+		super();
 		JFormattedTextField ftxtf = editor.getTextField();
 		ftxtf.setEditable(false);
 		ftxtf.setHorizontalAlignment(JTextField.CENTER);

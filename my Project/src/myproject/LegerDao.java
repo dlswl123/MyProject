@@ -159,7 +159,7 @@ public class LegerDao {
 		return null;
 	}
 	
-	// TODO 저장된값 불러오기(통계)
+	//  저장된값 불러오기(통계)
 	
 	public Vector<StatsVo> statsPieIncome() {
 		Connection conn = null;
@@ -228,5 +228,44 @@ public class LegerDao {
 		}
 		return null;
 	}
+
+	public Vector<LegerVo> Update() {
+		
+		return null;
+	}
 	
+	// TODO 검색하기
+	public int update(LegerVo vo) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = getConnection();
+			String sql = "update leger set"
+					+ "		ledno = ?,"
+					+ "		ledname = ?,"
+					+ "		ledmoney = ?,"
+					+ "		ledtype = ?"
+					+ "		ledday = ?"
+					+ "		ledmemo = ?"
+					+ "	  where ledname = ?";
+			pstmt = conn.prepareStatement(sql);
+			int i = 0;
+			pstmt.setInt(++i, vo.getLedNo());
+			pstmt.setString(++i, vo.getLedName());
+			pstmt.setInt   (++i, vo.getLedMoney());
+			pstmt.setString(++i, vo.getLedType());
+			pstmt.setString(++i, vo.getLedDay());
+			pstmt.setString(++i, vo.getLedMemo());
+			pstmt.setString(++i, vo.getLedName());
+			int count = pstmt.executeUpdate();
+			return count;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			closeAll(conn, pstmt, null);
+			
+		} // try~catch~finally
+		return 0;
+//		System.out.println("변경 실행됨");
+	} // update
 } // class
