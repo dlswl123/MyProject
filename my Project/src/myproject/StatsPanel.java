@@ -2,9 +2,7 @@ package myproject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.util.Vector;
 
 import javax.swing.JLabel;
@@ -12,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -47,16 +44,14 @@ public class StatsPanel extends JPanel {
 	
 	JTextArea txaIncome = new JTextArea();
 	JTextArea txaExpense = new JTextArea();
+	
 	String message = null;
-	
-	
 	
 	LegerDao dao = LegerDao.getInstance();
 	SearchDto dto = new SearchDto();
 	
 	public StatsPanel() {
 		this.setLayout(new BorderLayout());
-		
 		// North 총금액 출력부분
 		pnlText.setBackground(new Color(206, 251, 201));
 		pnlText.add(lblIncome);
@@ -70,22 +65,22 @@ public class StatsPanel extends JPanel {
 		txaIncome.setEditable(false);
 		
 		// Center 통계차트 panel
-		pnlStats.setLayout(new GridLayout(1, 2));
+		pnlStats.setLayout(new BorderLayout());
 		
 		Vector<StatsVo> income = dao.statsPieIncome();
 		Vector<StatsVo> expense = dao.statsPieExpense();
 		printMessage(income, expense);
 		
 		this.setBackground(new Color(255, 217, 236));
+		StatsChartPanelExpense expenseCha = new StatsChartPanelExpense();
+		JFreeChart chartExpense = expenseCha.getChart(expense);
+		ChartPanel expensePanel = new ChartPanel(chartExpense);
+		pnlStats.add(expensePanel, BorderLayout.EAST);
 		StatsChartPanelIncome incomeCha = new StatsChartPanelIncome();
 			JFreeChart chartIncome = incomeCha.getChart(income);
 			ChartPanel incomePanel = new ChartPanel(chartIncome);
-		pnlStats.add(incomePanel);
+		pnlStats.add(incomePanel, BorderLayout.CENTER);
 		
-		StatsChartPanelExpense expenseCha = new StatsChartPanelExpense();
-			JFreeChart chartExpense = expenseCha.getChart(expense);
-			ChartPanel ecpensePanel = new ChartPanel(chartExpense);
-		pnlStats.add(ecpensePanel);
 		this.add(pnlStats, BorderLayout.CENTER);
 	} // 생성자
 	
@@ -132,8 +127,8 @@ public class StatsPanel extends JPanel {
 					String ledmoney = String.valueOf(vo.getLedmoney());
 					statsName.add(ledname);
 					statsNum.add(ledmoney);
-//					System.out.println(statsName);
-//					System.out.println(statsNum);
+					System.out.println(statsName);
+					System.out.println(statsNum);
 					index++;
 				} // 자료생성 for문
 				
@@ -143,9 +138,6 @@ public class StatsPanel extends JPanel {
 				for (int i = 0; i < statsName.size(); i++ ) {
 					int nums = Integer.parseInt(statsNum.get(i));
 					String category = statsName.get(i);
-//					if () {
-//						
-//					}
 					dataset.addValue(nums, "수입", category);
 				} // 데이터 입력for문
 				
@@ -185,9 +177,6 @@ public class StatsPanel extends JPanel {
 				plot.getRangeAxis().setTickLabelFont(axisF);
 				
 				final JFreeChart chart = new JFreeChart(plot);
-//				if () {
-//					
-//				}
 				chart.setTitle("총 수입 차트"); // 차트타이틀
 				TextTitle copyright = new TextTitle("JFreeChart", new Font("SansSerif", Font.PLAIN, 9));
 				copyright.setHorizontalAlignment(HorizontalAlignment.RIGHT);
@@ -211,8 +200,8 @@ public class StatsChartPanelExpense {
 					String ledmoney = String.valueOf(vo.getLedmoney());
 					statsName.add(ledname);
 					statsNum.add(ledmoney);
-//					System.out.println(statsName);
-//					System.out.println(statsNum);
+					System.out.println(statsName);
+					System.out.println(statsNum);
 					index++;
 				} // 자료생성 for문
 				
@@ -222,9 +211,6 @@ public class StatsChartPanelExpense {
 				for (int i = 0; i < statsName.size(); i++ ) {
 					int nums = Integer.parseInt(statsNum.get(i));
 					String category = statsName.get(i);
-//					if () {
-//						
-//					}
 					dataset.addValue(nums, "지출", category);
 				} // 데이터 입력for문
 				

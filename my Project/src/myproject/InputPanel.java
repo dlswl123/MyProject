@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -21,6 +22,8 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
 
 @SuppressWarnings("serial")
 class InputPanel extends JPanel implements ActionListener {
@@ -45,7 +48,6 @@ class InputPanel extends JPanel implements ActionListener {
 	
 	JLabel lblList = new JLabel("카테고리");
 	JLabel lblMoney = new JLabel("금액");
-	JTextField txtList = new JTextField(20);
 	JTextField txtMoney = new JTextField(20);
 	
 	ButtonGroup group = new ButtonGroup();
@@ -55,7 +57,6 @@ class InputPanel extends JPanel implements ActionListener {
 	JRadioButton rdoTrans = new JRadioButton("이체");
 	
 	JLabel lblDate = new JLabel("날짜");
-	JTextField txtDay = new JTextField(20);
 	JLabel lblMemo = new JLabel("메모");
 	JTextField txtMemo = new JTextField(20);
 	
@@ -82,7 +83,7 @@ class InputPanel extends JPanel implements ActionListener {
 				Date next = (Date)model.getNextValue();
 				if (value != null && next != null) {
 					date = dateFormat.format(value);
-					System.out.println(date);
+//					System.out.println(date);
 				}
 				
 			}
@@ -92,8 +93,7 @@ class InputPanel extends JPanel implements ActionListener {
 	  
 	private void setUI() {
 		// 입력탭 설정부분
-		this.setLayout(new GridLayout(7, 1));
-//		this.setBackground(Color.WHITE);
+		pnlInput.setLayout(new GridLayout(7, 1));
 		// 입, 출 부분 버튼
 		JPanel pnlButton = new JPanel(new FlowLayout());
 		pnlButton.setOpaque(false);
@@ -101,7 +101,7 @@ class InputPanel extends JPanel implements ActionListener {
 		pnlButton.add(btnExpense);
 		btnExpense.addActionListener(this);
 		btnIncome.addActionListener(this);
-		this.add(pnlButton);
+		pnlInput.add(pnlButton);
 		
 		// 카테고리 선택부분
 		JPanel pnlList = new JPanel();
@@ -111,7 +111,7 @@ class InputPanel extends JPanel implements ActionListener {
 		pnlList.add(cmbExpense);
 		cmbIncome.setVisible(false);
 		cmbExpense.setVisible(false);
-		this.add(pnlList);
+		pnlInput.add(pnlList);
 //		pnlCenter.add(lblMoney);
 		
 		// 금액 입력부분
@@ -119,7 +119,7 @@ class InputPanel extends JPanel implements ActionListener {
 		pnlMoney.setOpaque(false);
 		pnlMoney.add(lblMoney);
 		pnlMoney.add(txtMoney);
-		this.add(pnlMoney);
+		pnlInput.add(pnlMoney);
 		
 		// 결제수단 선택부분
 		JPanel pnlRadio = new JPanel(new FlowLayout());
@@ -136,7 +136,7 @@ class InputPanel extends JPanel implements ActionListener {
 		pnlRadio.add(rdoCheckCard);
 		pnlRadio.add(rdoCash);
 		pnlRadio.add(rdoTrans);
-		this.add(pnlRadio);
+		pnlInput.add(pnlRadio);
 		
 		// 날짜입력 부분
 		JPanel pnlDay = new JPanel();
@@ -144,33 +144,41 @@ class InputPanel extends JPanel implements ActionListener {
 		pnlDay.add(lblDate);
 //		pnlDay.add(txtDay);
 		pnlDay.add(spinDate);
-		this.add(pnlDay);
+		pnlInput.add(pnlDay);
 		
 		// 메모입력 부분
 		JPanel pnlMemo = new JPanel();
 		pnlMemo.setOpaque(false);
 		pnlMemo.add(lblMemo);
 		pnlMemo.add(txtMemo);
-		this.add(pnlMemo);
+		pnlInput.add(pnlMemo);
 		
 		// 입력(저장) 부분
 		JPanel pnlSave = new JPanel(new FlowLayout());
 		pnlSave.setOpaque(false);
 		pnlSave.add(btnSave);
-		this.add(pnlSave);
+		pnlInput.add(pnlSave);
+		this.add(pnlInput);
 		btnSave.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//				Object obj = e.getSource();
+				
 				dao.insert(getData());
-				System.out.println("입력되었습니다");
+				JOptionPane.showMessageDialog(pnlInput, "입력되었습니다", "입력확인", JOptionPane.INFORMATION_MESSAGE);
+				btnExpense.setEnabled(true);
+				btnIncome.setEnabled(true);
+				cmbIncome.setVisible(false);
+				cmbExpense.setVisible(false);
+				cmbIncome.setSelectedIndex(0);
+				cmbExpense.setSelectedIndex(0);
+				group.clearSelection();
+				txtMoney.setText("");
+				txtMemo.setText("");
+				
+//				System.out.println("입력되었습니다");
 			}
 		});
-		
-//		pnlInput.add(pnlSave);
-//		this.add(pnlInput);
-
 	} // setUI()
 	
 	private LegerVo getData() {
@@ -196,9 +204,9 @@ class InputPanel extends JPanel implements ActionListener {
 		} // rdo버튼에 따라 입력받을 텍스트 설정
 		
 		String ledDay = date;
-		String ledMemo = txtDay.getText();
+		String ledMemo = txtMemo.getText();
 		LegerVo vo = new LegerVo(ledNo, ledName, ledMoney, ledType, ledDay, ledMemo);
-//		System.out.println(vo.toString());
+		System.out.println(vo.toString());
 		return vo;
 	} //  버튼 입력
 	
@@ -214,7 +222,6 @@ class InputPanel extends JPanel implements ActionListener {
 			btnExpense.setEnabled(true);
 			cmbIncome.setVisible(true);
 			cmbExpense.setVisible(false);
-			
 //			System.out.println("수입");
 			
 		// 지출선택시 지출재선택불가능 and 지출 콤보박스 출력

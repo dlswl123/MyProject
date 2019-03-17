@@ -77,7 +77,7 @@ public class LegerDao {
 			conn = getConnection();
 			String key = dto.getSearchKey();
 			String array = dto.getSearchArray();
-			System.out.println("search dao : " + array);
+//			System.out.println("search dao : " + array);
 			String sql = "select *"
 					+ "	  from ledger"
 					+ "	  where " + key + " like ?"
@@ -90,10 +90,10 @@ public class LegerDao {
 			} else if (key.equals("ledname")) {
 				String val = dto.getSearchTxt() + "%";
 				pstmt.setString(1, val);
-				System.out.println(val);
+//				System.out.println(val);
 			} else if (key.equals("ledmemo")) {
 				String val = "%" + dto.getSearchTxt() + "%";
-				System.out.println(val);
+//				System.out.println(val);
 				pstmt.setString(1, val);
 			}
 			rs = pstmt.executeQuery();
